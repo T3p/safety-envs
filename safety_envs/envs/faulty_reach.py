@@ -19,6 +19,8 @@ class FaultyReach(gym.Env):
     def __init__(self):
         self.wrapped = gym.make('PointReach-v0')
         self.mask = [1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0]  
+        self.observation_space = gym.spaces.Box(-np.inf, np.inf, (sum(self.mask),), dtype=np.float32) 
+        self.action_space = self.wrapped.action_space
         self.fault = 0.75
     
     def step(self, action):
