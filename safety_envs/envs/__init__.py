@@ -23,3 +23,6 @@ Wrapped environments
 #Reach task for point robot with reduced state
 register(id='BasicReach-v0',
          entry_point='safety_envs.envs.basic_reach:BasicReach')
+
+register(id='FaultyReach-v0',
+         entry_point='safety_envs.envs.faulty_reach:FaultyReach')
