@@ -26,3 +26,18 @@ register(id='BasicReach-v0',
 
 register(id='FaultyReach-v0',
          entry_point='safety_envs.envs.faulty_reach:FaultyReach')
+
+"""
+Other environments
+"""
+#Minigolf
+register(id='Minigolf-v0',
+         entry_point='safety_envs.envs.minigolf:Minigolf')
+
+#Complex minigolf
+register(id='ComplexMinigolf-v0',
+         entry_point='safety_envs.envs.minigolf:ComplexMinigolf')
+
+#Double integrator
+register(id='DoubleIntegrator-v0',
+         entry_point='safety_envs.envs.double_integrator:DoubleIntegrator')
