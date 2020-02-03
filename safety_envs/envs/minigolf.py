@@ -90,7 +90,7 @@ class Minigolf(gym.Env):
 
         self.state = xn
 
-        return self.get_state(), float(reward), done, {'state':self.get_state(), 'action':action}
+        return self.get_state(), float(reward), done, {'state':self.get_state(), 'action':action, 'danger':(reward==-100)}
 
     #Custom param for transfer
 
@@ -378,7 +378,7 @@ class ComplexMinigolf(gym.Env):
         self.state = xn
 
         # TODO the last three values should not be used
-        return self.get_state(), float(reward), done, {"state":state, "next_state":self.state, "action":action}
+        return self.get_state(), float(reward), done, {"state":state, "next_state":self.state, "action":action, 'danger':(reward==-100)}
 
     #Custom param for transfer
 
