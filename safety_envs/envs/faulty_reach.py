@@ -15,9 +15,9 @@ import numpy as np
 import math
 
 
-def bias_compass_observation(x, y):
+def bias_compass_observation(x, y, offset):
     alpha = get_angle(x, y)
-    alpha = offset_sum2(alpha, 20)
+    alpha = offset_sum2(alpha, offset)
     sin_alpha, cos_alpha = get_sin_cos(alpha)
     return cos_alpha, sin_alpha
 
@@ -50,10 +50,9 @@ class FaultyReach(gym.Env):
         self.mask = [1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0]  
         self.observation_space = gym.spaces.Box(-np.inf, np.inf, (sum(self.mask),), dtype=np.float32) 
         self.action_space = self.wrapped.action_space
-        self.fault = 0.75
+        self.offset = 20
     
     def step(self, action):
-        action = np.array([action[0], self.fault * action[1]])
         ob, reward, done, info = self.wrapped.step(action)
         ob = self.faulty_ob(ob)
         return ob, reward, done, info
@@ -74,6 +73,6 @@ class FaultyReach(gym.Env):
     def faulty_ob(self, obs):
         obs = filter_ob(obs, self.mask)
         # to simulate a damage in compass
-        obs[2], obs[3] = bias_compass_observation(obs[2], obs[3])
+        obs[2], obs[3] = bias_compass_observation(obs[2], obs[3], self.offset)
         return obs
   
