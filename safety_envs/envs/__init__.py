@@ -16,6 +16,18 @@ register(id='PointReach-v0',
          entry_point='safety_gym.envs.mujoco:Engine',
          kwargs={'config': config})
 
+#Basic point robot environment with speed actuator fault
+seed = 42
+config = {# 'observation_flatten': False,
+                   'robot_base': 'xmls/point_damaged.xml',
+                   'observe_goal_comp': True,
+                   '_seed': seed
+    }
+
+register(id='PointReachDamaged-v0',
+         entry_point='safety_gym.envs.mujoco:Engine',
+         kwargs={'config': config})
+
 
 """
 Wrapped environments
