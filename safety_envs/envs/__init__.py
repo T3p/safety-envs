@@ -38,6 +38,10 @@ register(id='Minigolf-v0',
 register(id='ComplexMinigolf-v0',
          entry_point='safety_envs.envs.minigolf:ComplexMinigolf')
 
+#Complex minigolf with embedded RBF features
+register(id='RBFMinigolf-v0',
+         entry_point='safety_envs.envs.minigolf:RBFMinigolf')
+
 #Double integrator
 register(id='DoubleIntegrator-v0',
          entry_point='safety_envs.envs.double_integrator:DoubleIntegrator')
