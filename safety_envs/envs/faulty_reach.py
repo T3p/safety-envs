@@ -75,4 +75,42 @@ class FaultyReach(gym.Env):
         # to simulate a damage in compass
         obs[2], obs[3] = bias_compass_observation(obs[2], obs[3], self.offset)
         return obs
+
+class FaultyReachH(gym.Env):
+
+    def __init__(self):
+        self.wrapped = gym.make('PointReach-v0')
+        self.mask = [1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0]  
+        self.observation_space = gym.spaces.Box(-np.inf, np.inf, (sum(self.mask),), dtype=np.float32) 
+        self.action_space = self.wrapped.action_space
+        self.offset = 20
+        self.horizon = 200  
+
+    def step(self, action):
+        ob, reward, done, info = self.wrapped.step(action)
+        ob = self.faulty_ob(ob)
+        self.t += 1
+        if self.t >= self.horizon:
+            done = True
+        return ob, reward, done, info
+      
+    def reset(self):
+        ob = self.wrapped.reset()
+        self.t = 0
+        return self.faulty_ob(ob)
+
+    def render(self, mode='human'):
+        return self.wrapped.render(mode=mode)
+
+    def close(self):
+        return self.wrapped.close()
+
+    def seed(self, seed):
+        return self.wrapped.seed(seed)
+
+    def faulty_ob(self, obs):
+        obs = filter_ob(obs, self.mask)
+        # to simulate a damage in compass
+        obs[2], obs[3] = bias_compass_observation(obs[2], obs[3], self.offset)
+        return obs
   

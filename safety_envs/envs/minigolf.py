@@ -308,6 +308,7 @@ class ComplexMinigolf(gym.Env):
         self.sigma_noise = 0.3
         self.ball_radius = 0.02135
         self.min_variance = 1e-2  # Minimum variance for computing the densities
+        self.steps = 0
 
         # gym attributes
         self.viewer = None
@@ -341,6 +342,7 @@ class ComplexMinigolf(gym.Env):
         return self.friction_low + (delta_f / delta_p) * state
 
     def step(self, action, render=False):
+        self.steps += 1
         action = np.clip(action, self.min_action, self.max_action / 2)
 
         noise = 10
@@ -372,7 +374,9 @@ class ComplexMinigolf(gym.Env):
             reward = -1
             done = False
         elif self.state < -4:
-            reward = -100
+            reward = -2
+        if self.steps >= 20:
+            done = True
 
         state = self.state
         self.state = xn
@@ -392,7 +396,8 @@ class ComplexMinigolf(gym.Env):
                                                           high=self.max_pos)])
         else:
             self.state = np.array(state)
-
+         
+        self.steps = 0
         return self.get_state()
 
     def get_state(self):
@@ -489,7 +494,6 @@ class RBFMinigolf(gym.Env):
         return self.friction_low + (delta_f / delta_p) * state
 
     def step(self, action, render=False):
-        #print(self.state)
         action = np.clip(action, self.min_action, self.max_action / 2)
 
         noise = 10
@@ -529,7 +533,7 @@ class RBFMinigolf(gym.Env):
         # TODO the last three values should not be used
         s = np.asscalar(self.state)
         feat = np.exp(-(np.array([s]*len(self.centers)) - self.centers)**2 / (2*self.widths**2))
-        #print(s, feat, action, reward==-100)
+        #print(s, feat)
         return feat, float(reward), done, {"state":state, 'danger':(reward==-100)}
 
     #Custom param for transfer
@@ -546,7 +550,7 @@ class RBFMinigolf(gym.Env):
             self.state = np.array(state)
 
         s = np.asscalar(self.state)
-        feat = np.exp(-(np.array([s]*len(self.centers)) - self.centers) / (2*self.widths**2))
+        feat = np.exp(-(np.array([s]*len(self.centers)) - self.centers)**2 / (2*self.widths**2))
         return feat
 
     def get_state(self):
