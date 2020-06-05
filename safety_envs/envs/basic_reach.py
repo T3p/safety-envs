@@ -26,6 +26,7 @@ class BasicReach(gym.Env):
     def step(self, action):
         ob, reward, done, info = self.wrapped.step(action)
         ob = filter_ob(ob, self.mask)
+        info['danger'] = 0
         return ob, reward, done, info
       
     def reset(self):
@@ -57,6 +58,7 @@ class BasicReachH(gym.Env):
         self.t += 1
         if self.t >= self.horizon:
             done = True
+        info['danger'] = 0
         return ob, reward, done, info
       
     def reset(self):

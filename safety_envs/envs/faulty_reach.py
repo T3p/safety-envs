@@ -55,6 +55,7 @@ class FaultyReach(gym.Env):
     def step(self, action):
         ob, reward, done, info = self.wrapped.step(action)
         ob = self.faulty_ob(ob)
+        info['danger'] = 0
         return ob, reward, done, info
       
     def reset(self):
@@ -92,6 +93,7 @@ class FaultyReachH(gym.Env):
         self.t += 1
         if self.t >= self.horizon:
             done = True
+        info['danger'] = 0
         return ob, reward, done, info
       
     def reset(self):
