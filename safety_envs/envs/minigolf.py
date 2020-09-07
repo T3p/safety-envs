@@ -16,7 +16,7 @@ References
 
 """
 
-class MiniGolf(gym.Env):
+class Minigolf(gym.Env):
     metadata = {
         'render.modes': ['human', 'rgb_array'],
         'video.frames_per_second': 30
@@ -286,7 +286,7 @@ class MiniGolf(gym.Env):
 
         return pdf[:, :, 0, :]
 
-class ComplexMiniGolf(gym.Env):
+class ComplexMinigolf(gym.Env):
     metadata = {
         'render.modes': ['human', 'rgb_array'],
         'video.frames_per_second': 30
@@ -305,7 +305,7 @@ class ComplexMiniGolf(gym.Env):
         self.friction_low = 0.131
         self.friction_high =  0.19 #0.190
         self.hole_size = 0.10 # [0.10:0.15]
-        self.sigma_noise = 0.3
+        self.sigma_noise = 0 #0.3 Deterministic version!
         self.ball_radius = 0.02135
         self.min_variance = 1e-2  # Minimum variance for computing the densities
 
@@ -378,7 +378,7 @@ class ComplexMiniGolf(gym.Env):
         self.state = xn
 
         # TODO the last three values should not be used
-        return self.get_state(), float(reward), done, {"state":state, "next_state":self.state, "action":action}
+        return self.get_state(), float(reward), done, {"state":state, "next_state":self.state, "action":action, "danger":reward==-100}
 
     #Custom param for transfer
 
@@ -435,7 +435,7 @@ class ComplexMiniGolf(gym.Env):
 
         return reward, done
     
-class RBFMiniGolf(gym.Env):
+class RBFMinigolf(gym.Env):
     metadata = {
         'render.modes': ['human', 'rgb_array'],
         'video.frames_per_second': 30
@@ -454,7 +454,7 @@ class RBFMiniGolf(gym.Env):
         self.friction_low = 0.131
         self.friction_high =  0.19 #0.190
         self.hole_size = 0.10 # [0.10:0.15]
-        self.sigma_noise = 0.3
+        self.sigma_noise = 0#0.3 Deterministic version!
         self.ball_radius = 0.02135
         self.min_variance = 1e-2  # Minimum variance for computing the densities
 
@@ -469,7 +469,7 @@ class RBFMiniGolf(gym.Env):
         self.action_space = spaces.Box(low=self.min_action,
                                        high=self.max_action,
                                        shape=(1,))
-        self.observation_space = spaces.Box(low=low, high=high)
+        self.observation_space = spaces.Box(low=0, high=1, shape=(4,))
 
         # initialize state
         self.seed()
@@ -534,7 +534,7 @@ class RBFMiniGolf(gym.Env):
         self.state = xn
 
         # TODO the last three values should not be used
-        return self.feat(self.get_state()), float(reward), done, {"state":state, "next_state":self.state, "action":action}
+        return self.feat(self.get_state()), float(reward), done, {"state":state, "next_state":self.state, "action":action, "danger":reward==-100}
 
     #Custom param for transfer
 
@@ -545,7 +545,7 @@ class RBFMiniGolf(gym.Env):
         self.t = 0
         #TODO change reset
         if state is None:
-            self.state = np.array([self.np_random.uniform(low=self.min_pos,
+            self.state = np.array([self.np_random.uniform(low=(self.max_pos-self.min_pos)/8,
                                                           high=self.max_pos)])
         else:
             self.state = np.array(state)
